@@ -8,7 +8,7 @@ namespace InventorySystem
     {
         public float MaxWeight { get; private set; }
         public float CurrentWeight { get; private set; }
-        public readonly List<Item> _items = new();
+        private readonly List<Item> _items = new();
 
         public Inventory(float maxWeight)
         {
