@@ -9,6 +9,7 @@ namespace Model
     public class Player
     {
         public event Action OnHealthChanged;
+        public event Action OnExpChanged;
 
         private int _currentHP;
         public int CurrentHP
@@ -58,6 +59,7 @@ namespace Model
         public void Experience(int experience)
         {
             Exp += experience;
+            OnExpChanged?.Invoke();
         }
     }
 }

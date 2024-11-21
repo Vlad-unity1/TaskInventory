@@ -21,6 +21,8 @@ namespace View
             UpdatePlayerUI();
             _takeDamageButton.onClick.AddListener(() => TakeDamage(30));
             _playerModel.OnHealthChanged += UpdateHealthUI;
+            _playerModel.Inventory.OnWeightChanged += UpdateInventoryUI;
+            _playerModel.OnExpChanged += UpdateExpUI;
         }
 
         private void UpdateHealthUI()

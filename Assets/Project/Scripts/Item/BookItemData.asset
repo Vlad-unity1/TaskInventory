@@ -16,5 +16,5 @@ MonoBehaviour:
   MaxStack: 0
   Weight: 30
   IsStackable: 0
-  _isRead: 0
+  _isRead: 1
   <EXP>k__BackingField: 20

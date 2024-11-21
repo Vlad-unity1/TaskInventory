@@ -6,9 +6,11 @@ using UnityEngine.UI;
 public class InventoryController : MonoBehaviour
 {
     [SerializeField] private Button _openInventory;
-    [SerializeField] private Button _useItemButton; 
     [SerializeField] private GameObject _inventoryPanel;
-    [SerializeField] private ItemHolder _slot;
+    [SerializeField] private ItemHolder[] _slots;
+    [SerializeField] private Button[] _useButtons;
+    [SerializeField] private Button[] _addButtons;
+    [SerializeField] private Button[] _removeButtons;
 
     private Inventory _inventory;
 
@@ -16,7 +18,15 @@ public class InventoryController : MonoBehaviour
     {
         _inventory = inventory;
         _inventoryPanel.SetActive(false);
-        _useItemButton.onClick.AddListener(TryToUse);
+
+        for (int i = 0; i < _slots.Length; i++)
+        {
+            int slotIndex = i;
+
+            _useButtons[i].onClick.AddListener(() => TryToUse(slotIndex));
+            _addButtons[i].onClick.AddListener(() => TryAddItem(slotIndex));
+            _removeButtons[i].onClick.AddListener(() => TryRemoveItem(slotIndex));
+        }
     }
 
     public void ToggleInventory()
@@ -24,13 +34,18 @@ public class InventoryController : MonoBehaviour
         _inventoryPanel.SetActive(!_inventoryPanel.activeSelf);
     }
 
-    public void TryToUse()
+    public void TryToUse(int slotIndex)
     {
-        _inventory.UseItem(_slot.ItemData);
+        _inventory.UseItem(_slots[slotIndex].ItemData);
     }
 
-    public void TryAddItem()
+    public void TryAddItem(int slotIndex)
     {
-        _inventory.TryAddItem(_slot.ItemData);
+        _inventory.TryAddItem(_slots[slotIndex].ItemData);
+    }
+
+    public void TryRemoveItem(int slotIndex)
+    {
+        _inventory.RemoveItem(_slots[slotIndex].ItemData);
     }
 }
