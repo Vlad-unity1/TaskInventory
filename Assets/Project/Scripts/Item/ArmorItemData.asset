@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8dad3ef332808714bb12405097dbfe79, type: 3}
   m_Name: ArmorItemData
   m_EditorClassIdentifier: 
-  MaxStack: 0
-  Weight: 0
-  IsStackable: 0
   Type: 2
+  MaxStack: 0
+  Weight: 35
+  IsStackable: 0

@@ -1,18 +1,33 @@
 using Armor;
 using InventorySystem;
+using System;
 using UnityEngine;
 using Weapon;
 
 namespace Model
 {
-    public class PlayerModel
+    public class Player
     {
-        public int CurrentHP { get; private set; }
+        public event Action OnHealthChanged;
+
+        private int _currentHP;
+        public int CurrentHP
+        {
+            get => _currentHP;
+            private set
+            {
+                if (_currentHP != value)
+                {
+                    _currentHP = value;
+                    OnHealthChanged?.Invoke();
+                }
+            }
+        }
         public int MaxHP { get; private set; }
         public int Exp { get; private set; }
         public Inventory Inventory { get; private set; }
 
-        public PlayerModel(int maxHP, float maxInventoryWeight)
+        public Player(int maxHP, float maxInventoryWeight)
         {
             MaxHP = maxHP;
             CurrentHP = MaxHP;
@@ -22,14 +37,12 @@ namespace Model
 
         public void Heal(int amount)
         {
-            CurrentHP += amount;
-            if (CurrentHP > MaxHP) CurrentHP = MaxHP;
+            CurrentHP = Mathf.Min(CurrentHP + amount, MaxHP);
         }
 
         public void TakeDamage(int damage)
         {
-            CurrentHP -= damage;
-            if (CurrentHP < 0) CurrentHP = 0;
+            CurrentHP = Mathf.Max(CurrentHP - damage, 0);
         }
 
         public void EquipWeapon(WeaponEffect weapon)
@@ -39,7 +52,6 @@ namespace Model
 
         public void EquipArmor(ArmorEffect armor)
         {
-
             Debug.Log($"ArmorEffect {armor} equip.");
         }
 

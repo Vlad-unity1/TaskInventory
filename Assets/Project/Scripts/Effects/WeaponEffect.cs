@@ -1,16 +1,15 @@
-﻿using EffectApply;
-using ItemScriptable;
+﻿using ItemScriptable;
 using Model;
 using UnityEngine;
 
 namespace Weapon
 {
     [CreateAssetMenu(fileName = "WeaponItemData", menuName = "ScriptableObjects/WeaponItemData", order = 54)]
-    public class WeaponEffect : ItemData, IEffect
+    public class WeaponEffect : ItemData
     {
-        public void Apply(PlayerModel player)
+        public override void UseItemEffect()
         {
-            player.EquipWeapon(this);
+            GlobalTarget.EquipWeapon(this);
         }
     }
 }

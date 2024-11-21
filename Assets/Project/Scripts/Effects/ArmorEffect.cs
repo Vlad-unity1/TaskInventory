@@ -1,16 +1,14 @@
-using EffectApply;
 using ItemScriptable;
-using Model;
 using UnityEngine;
 
-namespace Armor 
+namespace Armor
 {
     [CreateAssetMenu(fileName = "ArmorItemData", menuName = "ScriptableObjects/ArmorItemData", order = 56)]
-    public class ArmorEffect : ItemData, IEffect
+    public class ArmorEffect : ItemData
     {
-        public void Apply(PlayerModel player)
+        public override void UseItemEffect()
         {
-            player.EquipArmor(this);
+            GlobalTarget.EquipArmor(this);
         }
     }
 }

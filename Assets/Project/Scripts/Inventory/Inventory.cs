@@ -1,5 +1,5 @@
-﻿using ItemStats;
-using Model;
+﻿using ItemScriptable;
+using System;
 using System.Collections.Generic;
 
 namespace InventorySystem
@@ -8,14 +8,14 @@ namespace InventorySystem
     {
         public float MaxWeight { get; private set; }
         public float CurrentWeight { get; private set; }
-        private readonly List<Item> _items = new();
+        private readonly List<ItemData> _items = new();
 
         public Inventory(float maxWeight)
         {
             MaxWeight = maxWeight;
         }
 
-        public bool AddItem(Item item)
+        public bool TryAddItem(ItemData item)
         {
             if (CurrentWeight + item.Weight > MaxWeight)
                 return false;
@@ -25,21 +25,21 @@ namespace InventorySystem
             return true;
         }
 
-        public bool RemoveItem(Item item)
+        public bool RemoveItem(ItemData item)
         {
             if (_items.Remove(item))
             {
                 CurrentWeight -= item.Weight;
                 return true;
             }
-            return false;
+            throw new Exception("попытка удалить предмет которого нет в инвентаре");
         }
 
-        public void UseItem(Item item, PlayerModel player)
+        public void UseItem(ItemData item)
         {
             if (_items.Contains(item))
             {
-                item.Effect.Apply(player);
+                item.UseItemEffect();
                 RemoveItem(item);
             }
         }

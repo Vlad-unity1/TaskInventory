@@ -11,33 +11,37 @@ namespace View
         [SerializeField] private TextMeshProUGUI _expText;
         [SerializeField] private Slider _healthSlider;
         [SerializeField] private TextMeshProUGUI _inventoryWeightText;
+        [SerializeField] private Button _takeDamageButton;
 
-        [Header("Player Stats")]
-        [SerializeField] private int _maxHP;
-        [SerializeField] private float _maxInventoryWeight;
+        private Player _playerModel;
 
-        private PlayerModel playerModel;
-
-        public void Initialize(PlayerModel model)
+        public void Initialize(Player model)
         {
-            playerModel = new PlayerModel(_maxHP, _maxInventoryWeight);
-            playerModel = model;
+            _playerModel = model;
             UpdatePlayerUI();
+            _takeDamageButton.onClick.AddListener(() => TakeDamage(30));
+            _playerModel.OnHealthChanged += UpdateHealthUI;
         }
 
         private void UpdateHealthUI()
         {
-            _healthSlider.value = (float)playerModel.CurrentHP / playerModel.MaxHP;
+            _healthSlider.value = (float)_playerModel.CurrentHP / _playerModel.MaxHP;
         }
 
         private void UpdateExpUI()
         {
-            _expText.text = $"EXP: {playerModel.Exp}";
+            _expText.text = $"EXP: {_playerModel.Exp}";
         }
 
         private void UpdateInventoryUI()
         {
-            _inventoryWeightText.text = $"Inventory Weight: {playerModel.Inventory.CurrentWeight}/{playerModel.Inventory.MaxWeight}";
+            _inventoryWeightText.text = $"Inventory Weight: {_playerModel.Inventory.CurrentWeight}/{_playerModel.Inventory.MaxWeight}";
+        }
+
+        public void TakeDamage(int damage)
+        {
+            _playerModel.TakeDamage(damage);
+            UpdateHealthUI();
         }
 
         private void UpdatePlayerUI()

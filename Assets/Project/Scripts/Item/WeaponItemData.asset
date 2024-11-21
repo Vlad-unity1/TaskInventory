@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a112d3d8742157f40bcbeb110902b904, type: 3}
   m_Name: WeaponItemData
   m_EditorClassIdentifier: 
-  MaxStack: 0
-  Weight: 0
-  IsStackable: 0
   Type: 3
+  MaxStack: 0
+  Weight: 45
+  IsStackable: 0
