@@ -2,12 +2,13 @@ using ItemScriptable;
 using Model;
 using UnityEngine;
 using View;
+using ViewInventory;
 
 
 public class EntryPoint : MonoBehaviour
 {
     [SerializeField] private PlayerView _playerView;
-    [SerializeField] private InventoryController _inventoryController;
+    [SerializeField] private InventoryView _inventoryController;
 
     private void Awake()
     {
