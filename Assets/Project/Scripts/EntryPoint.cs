@@ -4,17 +4,19 @@ using UnityEngine;
 using View;
 using ViewInventory;
 
-
-public class EntryPoint : MonoBehaviour
+namespace EntryPoinInProject
 {
-    [SerializeField] private PlayerView _playerView;
-    [SerializeField] private InventoryView _inventoryController;
-
-    private void Awake()
+    public class EntryPoint : MonoBehaviour
     {
-        Player player = new(200, 200);
-        _playerView.Initialize(player);
-        _inventoryController.Initialize(player.Inventory);
-        ItemData.SetGlobalTarget(player);
+        [SerializeField] private PlayerView _playerView;
+        [SerializeField] private InventoryView _inventoryController;
+
+        private void Awake()
+        {
+            Player player = new(200, 200);
+            _playerView.Initialize(player);
+            _inventoryController.Initialize(player.Inventory);
+            ItemData.SetGlobalTarget(player);
+        }
     }
 }

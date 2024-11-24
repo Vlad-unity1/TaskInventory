@@ -16,3 +16,4 @@ MonoBehaviour:
   MaxStack: 0
   Weight: 45
   IsStackable: 0
+  _weaponPrefab: {fileID: 3974762432217873314, guid: b1c88ac7f5fbb0845b673695327f98e0, type: 3}

@@ -1,8 +1,10 @@
-﻿using ItemScriptable;
+﻿using Armor;
+using ItemScriptable;
+using MessageInfo;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor.VersionControl;
+using Weapon;
 
 namespace InventorySystem
 {
@@ -12,6 +14,7 @@ namespace InventorySystem
         public event Action<string> OnItemAdded;
         public event Action<string> OnItemRemoved;
         public event Action<string> OnItemUsed;
+        public event Action OnReturnItem;
 
         public float MaxWeight { get; private set; }
         public float CurrentWeight { get; private set; }
@@ -64,6 +67,7 @@ namespace InventorySystem
                 OnItemRemoved?.Invoke(Message.ITEM_REMOVED);
                 return true;
             }
+
             throw new Exception("попытка удалить предмет которого нет в инвентаре");
         }
 
@@ -80,6 +84,36 @@ namespace InventorySystem
             {
                 OnItemUsed?.Invoke(Message.ITEM_USE_FAILED);
             }
+        }
+
+        public void ReturnItem(ItemData item)
+        {
+            if (item == null) return;
+
+            if (item is WeaponEffect weapon)
+            {
+                if (!_items.Contains(weapon))
+                {
+                    _items.Add(weapon);
+                    CurrentWeight += weapon.Weight;
+                    OnReturnItem?.Invoke();
+                }
+            }
+            else if (item is ArmorEffect armor)
+            {
+                if (!_items.Contains(armor))
+                {
+                    _items.Add(armor);
+                    CurrentWeight += armor.Weight;
+                    OnReturnItem?.Invoke();
+                }
+            }
+        }
+
+        public int CurrentStack(ItemData item)
+        {
+            int current = _items.Count(i => i == item);
+            return current;
         }
     }
 }

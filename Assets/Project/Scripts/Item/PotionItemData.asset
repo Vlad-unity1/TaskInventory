@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: PotionItemData
   m_EditorClassIdentifier: 
   Type: 1
-  MaxStack: 2
-  Weight: 150
+  MaxStack: 5
+  Weight: 15
   IsStackable: 1
   <HealthAmount>k__BackingField: 15

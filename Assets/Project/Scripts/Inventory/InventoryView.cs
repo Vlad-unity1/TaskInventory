@@ -1,6 +1,6 @@
 ﻿using InventorySystem;
 using ItemInspector;
-using System.Collections;
+using MessageInfo;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,6 +16,7 @@ namespace ViewInventory
         [SerializeField] private Button[] _addButtons;
         [SerializeField] private Button[] _removeButtons;
         [SerializeField] private TextMeshProUGUI _errorMessageText;
+        [SerializeField] private TextMeshProUGUI[] _currentStack;
 
         private Inventory _inventory;
 
@@ -27,6 +28,8 @@ namespace ViewInventory
             _inventory.OnItemAdded += ShowErrorMessage;
             _inventory.OnItemRemoved += ShowErrorMessage;
             _inventory.OnItemUsed += ShowErrorMessage;
+            _inventory.OnReturnItem += UpdateStackCounts;
+            UpdateStackCounts();
         }
 
         public void ToggleInventory()
@@ -36,30 +39,49 @@ namespace ViewInventory
 
         public void TryToUse(int slotIndex)
         {
-            _inventory.UseItem(_slots[slotIndex].ItemData);
+            var item = _slots[slotIndex].ItemData;
+            _inventory.UseItem(item);
+            _currentStack[slotIndex].text = _inventory.CurrentStack(item).ToString();
         }
 
         public void TryAddItem(int slotIndex)
         {
-            _inventory.TryAddItem(_slots[slotIndex].ItemData);
+            var item = _slots[slotIndex].ItemData;
+            if (_inventory.TryAddItem(item))
+            {
+                _currentStack[slotIndex].text = _inventory.CurrentStack(item).ToString();
+            }
         }
 
         public void TryRemoveItem(int slotIndex)
         {
-            _inventory.RemoveItem(_slots[slotIndex].ItemData);
+            var item = _slots[slotIndex].ItemData;
+            if (_inventory.RemoveItem(item))
+            {
+                _currentStack[slotIndex].text = _inventory.CurrentStack(item).ToString();
+            }
+        }
+
+        private void UpdateStackCounts()
+        {
+            for (int i = 0; i < _slots.Length; i++)
+            {
+                var item = _slots[i].ItemData;
+                if (item != null)
+                {
+                    _currentStack[i].text = _inventory.CurrentStack(item).ToString();
+                }
+                else
+                {
+                    _currentStack[i].text = "0";
+                }
+            }
         }
 
         private void ShowErrorMessage(string message)
         {
-            StartCoroutine(ShowMessageCoroutine(message));
+            StartCoroutine(Message.ShowMessage(_errorMessageText, message));
         }
 
-        private IEnumerator ShowMessageCoroutine(string message)
-        {
-            _errorMessageText.text = message;
-            _errorMessageText.gameObject.SetActive(true);
-            yield return new WaitForSeconds(2f);
-            _errorMessageText.gameObject.SetActive(false);
-        }
     }
 }

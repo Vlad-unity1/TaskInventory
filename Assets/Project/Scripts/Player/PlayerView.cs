@@ -1,7 +1,10 @@
+using Armor;
+using MessageInfo;
 using Model;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Weapon;
 
 namespace View
 {
@@ -9,9 +12,14 @@ namespace View
     {
         [Header("UI Elements")]
         [SerializeField] private TextMeshProUGUI _expText;
+        [SerializeField] private TextMeshProUGUI _infoBookText;
         [SerializeField] private Slider _healthSlider;
         [SerializeField] private TextMeshProUGUI _inventoryWeightText;
         [SerializeField] private Button _takeDamageButton;
+
+        [Header("Equipment Slots")]
+        [SerializeField] private Transform _weaponSlot;
+        [SerializeField] private Transform _armorSlot;
 
         private Player _playerModel;
 
@@ -19,10 +27,15 @@ namespace View
         {
             _playerModel = model;
             UpdatePlayerUI();
+
             _takeDamageButton.onClick.AddListener(() => TakeDamage(30));
+
             _playerModel.OnHealthChanged += UpdateHealthUI;
             _playerModel.Inventory.OnWeightChanged += UpdateInventoryUI;
             _playerModel.OnExpChanged += UpdateExpUI;
+            _playerModel.OnWeaponEquipped += EquipWeapon;
+            _playerModel.OnArmorEquipped += EquipArmor;
+            _playerModel.OnBookReaded += ShowInfoMessage;
         }
 
         private void UpdateHealthUI()
@@ -46,11 +59,26 @@ namespace View
             UpdateHealthUI();
         }
 
+        private void EquipWeapon(WeaponEffect weapon)
+        {
+            Instantiate(weapon.WeaponPrefab, _weaponSlot.transform);
+        }
+
+        private void EquipArmor(ArmorEffect armor)
+        {
+            Instantiate(armor.ArmorPrefab, _weaponSlot.transform);
+        }
+
         private void UpdatePlayerUI()
         {
             UpdateHealthUI();
             UpdateExpUI();
             UpdateInventoryUI();
+        }
+
+        private void ShowInfoMessage(string message)
+        {
+            StartCoroutine(Message.ShowMessage(_infoBookText, message));
         }
     }
 }
