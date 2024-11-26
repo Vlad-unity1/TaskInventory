@@ -1,7 +1,9 @@
 ﻿using Armor;
+using Book;
 using InventorySystem;
 using MessageInfo;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using Weapon;
 
@@ -31,6 +33,7 @@ namespace Model
         public int MaxHP { get; private set; }
         public int Exp { get; private set; }
         public Inventory Inventory { get; private set; }
+        public List<BookEffect> _readBooks { get; private set; }
         private WeaponEffect _equippedWeapon;
         private ArmorEffect _equippedArmor;
 
@@ -41,6 +44,7 @@ namespace Model
             CurrentHP = MaxHP;
             Exp = 0;
             Inventory = new Inventory(maxInventoryWeight);
+            _readBooks = new List<BookEffect>();
         }
 
         public void Heal(int amount)
@@ -58,7 +62,6 @@ namespace Model
             if (_equippedArmor != null)
             {
                 Inventory.ReturnItem(_equippedArmor);
-                _equippedArmor.ArmorPrefab.SetActive(false);
                 _equippedArmor = null;
             }
 
@@ -71,7 +74,6 @@ namespace Model
             if (_equippedWeapon != null)
             {
                 Inventory.ReturnItem(_equippedWeapon);
-                _equippedWeapon.WeaponPrefab.SetActive(false);
                 _equippedWeapon = null;
             }
 
@@ -83,7 +85,20 @@ namespace Model
         {
             Exp += experience;
             OnExpChanged?.Invoke();
-            OnBookReaded?.Invoke(Message.BOOK_USED);
+        }
+
+        public void ReadBook(BookEffect book)
+        {
+            if (!_readBooks.Contains(book))
+            {
+                _readBooks.Add(book);
+                Experience(book.EXP);
+                OnBookReaded?.Invoke(Message.BOOK_USED);
+            }
+            else
+            {
+                OnBookReaded?.Invoke(Message.BOOK_ALREADY_READ);
+            }
         }
     }
 }

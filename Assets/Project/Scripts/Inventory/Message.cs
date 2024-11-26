@@ -12,6 +12,8 @@ namespace MessageInfo
         public const string ITEM_REMOVED = "Предмет успешно удален!";
         public static string ITEM_USED = "Предмет успешно использован!";
         public static string BOOK_USED = "Книга не может быть повтороно использована!";
+        public static string BOOK_ALREADY_READ = "Попытка повтороного прочтения книги!";
+        public static string POTION_USED = " ";
 
         public static IEnumerator ShowMessage(TextMeshProUGUI messageText, string message, float displayTime = 2f)
         {

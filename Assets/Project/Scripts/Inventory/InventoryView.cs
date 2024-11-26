@@ -1,6 +1,8 @@
-﻿using InventorySystem;
+﻿using Book;
+using InventorySystem;
 using ItemInspector;
 using MessageInfo;
+using Potion;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -17,6 +19,9 @@ namespace ViewInventory
         [SerializeField] private Button[] _removeButtons;
         [SerializeField] private TextMeshProUGUI _errorMessageText;
         [SerializeField] private TextMeshProUGUI[] _currentStack;
+        [SerializeField] private TextMeshProUGUI _potionMessage;
+        [SerializeField] private TextMeshProUGUI _bookStatusText;
+        [SerializeField] private RawImage _bookImage;
 
         private Inventory _inventory;
 
@@ -29,6 +34,7 @@ namespace ViewInventory
             _inventory.OnItemRemoved += ShowErrorMessage;
             _inventory.OnItemUsed += ShowErrorMessage;
             _inventory.OnReturnItem += UpdateStackCounts;
+
             UpdateStackCounts();
         }
 
@@ -42,6 +48,16 @@ namespace ViewInventory
             var item = _slots[slotIndex].ItemData;
             _inventory.UseItem(item);
             _currentStack[slotIndex].text = _inventory.CurrentStack(item).ToString();
+
+            if (item is PotionEffect)
+            {
+                StartCoroutine(Message.ShowMessage(_potionMessage, Message.POTION_USED));
+            }
+
+            if (item is BookEffect)
+            {
+                UpdateBookStatus(true);
+            }
         }
 
         public void TryAddItem(int slotIndex)
@@ -75,6 +91,15 @@ namespace ViewInventory
                 {
                     _currentStack[i].text = "0";
                 }
+            }
+        }
+
+        public void UpdateBookStatus(bool isRead)
+        {
+            if (isRead)
+            {
+                _bookStatusText.text = "Used";
+                _bookImage.color = Color.gray;
             }
         }
 

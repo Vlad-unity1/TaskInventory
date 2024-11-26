@@ -22,6 +22,8 @@ namespace View
         [SerializeField] private Transform _armorSlot;
 
         private Player _playerModel;
+        private GameObject _equippedWeaponInstance;
+        private GameObject _equippedArmorInstance;
 
         public void Initialize(Player model)
         {
@@ -61,12 +63,22 @@ namespace View
 
         private void EquipWeapon(WeaponEffect weapon)
         {
-            Instantiate(weapon.WeaponPrefab, _weaponSlot.transform);
+            if (_equippedWeaponInstance != null)
+            {
+                Destroy(_equippedWeaponInstance);
+            }
+
+            _equippedWeaponInstance = Instantiate(weapon.WeaponPrefab, _weaponSlot.transform);
         }
 
         private void EquipArmor(ArmorEffect armor)
         {
-            Instantiate(armor.ArmorPrefab, _weaponSlot.transform);
+            if (_equippedArmorInstance != null)
+            {
+                Destroy(_equippedArmorInstance);
+            }
+
+            _equippedArmorInstance = Instantiate(armor.ArmorPrefab, _armorSlot.transform);
         }
 
         private void UpdatePlayerUI()

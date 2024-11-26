@@ -1,4 +1,5 @@
 using ItemScriptable;
+using MessageInfo;
 using UnityEngine;
 
 namespace Potion
@@ -11,6 +12,7 @@ namespace Potion
         public override void UseItemEffect()
         {
             GlobalTarget.Heal(HealthAmount);
+            Message.POTION_USED = $"+{HealthAmount} HP";
         }
     }
 }
