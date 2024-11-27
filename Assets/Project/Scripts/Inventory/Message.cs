@@ -14,6 +14,7 @@ namespace MessageInfo
         public static string BOOK_USED = "Книга не может быть повтороно использована!";
         public static string BOOK_ALREADY_READ = "Попытка повтороного прочтения книги!";
         public static string POTION_USED = " ";
+        public static string MAX_STACK = "Максимальный стак предмета!";
 
         public static IEnumerator ShowMessage(TextMeshProUGUI messageText, string message, float displayTime = 2f)
         {

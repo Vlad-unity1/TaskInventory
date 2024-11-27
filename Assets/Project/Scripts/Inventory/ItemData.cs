@@ -10,7 +10,7 @@ namespace ItemScriptable
         public int MaxStack;
         public float Weight;
         public bool IsStackable;
-
+        public Sprite Image;
         public static Player GlobalTarget { get; private set; }
 
         public static void SetGlobalTarget(Player player)

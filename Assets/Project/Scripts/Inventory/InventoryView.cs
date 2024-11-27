@@ -1,11 +1,14 @@
-﻿using Book;
+﻿using Armor;
+using Book;
 using InventorySystem;
 using ItemInspector;
 using MessageInfo;
 using Potion;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Weapon;
 
 namespace ViewInventory
 {
@@ -21,8 +24,9 @@ namespace ViewInventory
         [SerializeField] private TextMeshProUGUI[] _currentStack;
         [SerializeField] private TextMeshProUGUI _potionMessage;
         [SerializeField] private TextMeshProUGUI _bookStatusText;
-        [SerializeField] private RawImage _bookImage;
-
+        [SerializeField] private Sprite _bookImage;
+        [SerializeField] private List<Sprite> _usedSlots = new();
+        [SerializeField] private Image _lastItemImage;
         private Inventory _inventory;
 
         public void Initialize(Inventory inventory)
@@ -48,6 +52,13 @@ namespace ViewInventory
             var item = _slots[slotIndex].ItemData;
             _inventory.UseItem(item);
             _currentStack[slotIndex].text = _inventory.CurrentStack(item).ToString();
+            DeleteSlotImageTexture(_slots[slotIndex]);
+            LastItemUsed(item.Image);
+
+            if (item is ArmorEffect || item is WeaponEffect)
+            {
+                SetSlotImageTexture(_slots[slotIndex], item.Image);
+            }
 
             if (item is PotionEffect)
             {
@@ -66,6 +77,7 @@ namespace ViewInventory
             if (_inventory.TryAddItem(item))
             {
                 _currentStack[slotIndex].text = _inventory.CurrentStack(item).ToString();
+                SetSlotImageTexture(_slots[slotIndex], item.Image);
             }
         }
 
@@ -75,6 +87,7 @@ namespace ViewInventory
             if (_inventory.RemoveItem(item))
             {
                 _currentStack[slotIndex].text = _inventory.CurrentStack(item).ToString();
+                DeleteSlotImageTexture(_slots[slotIndex]);
             }
         }
 
@@ -99,8 +112,29 @@ namespace ViewInventory
             if (isRead)
             {
                 _bookStatusText.text = "Used";
-                _bookImage.color = Color.gray;
             }
+        }
+
+        private void SetSlotImageTexture(ItemHolder slot, Sprite texture)
+        {
+            if (slot.TryGetComponent<Image>(out var rawImage))
+            {
+                rawImage.sprite = texture;
+            }
+        }
+
+        private void DeleteSlotImageTexture(ItemHolder slot)
+        {
+            if (slot.TryGetComponent<Image>(out var rawImage))
+            {
+                rawImage.sprite = null;
+            }
+        }
+
+        private void LastItemUsed(Sprite texture)
+        {
+            _usedSlots.Add(texture);
+            _lastItemImage.sprite = texture;
         }
 
         private void ShowErrorMessage(string message)

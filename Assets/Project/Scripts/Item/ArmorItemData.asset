@@ -16,4 +16,5 @@ MonoBehaviour:
   MaxStack: 0
   Weight: 35
   IsStackable: 0
+  Image: {fileID: 21300000, guid: f59ab5aac1a092049a60bf9c96e6aaac, type: 3}
   _armorPrefab: {fileID: 3974762432217873314, guid: 1887bd31122b50944868b35173f7a254, type: 3}

@@ -16,5 +16,5 @@ MonoBehaviour:
   MaxStack: 0
   Weight: 30
   IsStackable: 0
-  _isRead: 0
+  Image: {fileID: 21300000, guid: 8ae285c8a5cd2c646973bcefb9378a16, type: 3}
   <EXP>k__BackingField: 20
