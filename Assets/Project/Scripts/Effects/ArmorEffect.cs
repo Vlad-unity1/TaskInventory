@@ -1,4 +1,5 @@
 using ItemScriptable;
+using Model;
 using UnityEngine;
 
 namespace Armor
@@ -7,12 +8,11 @@ namespace Armor
     public class ArmorEffect : ItemData
     {
         [SerializeField] private GameObject _armorPrefab;
-
         public GameObject ArmorPrefab => _armorPrefab;
 
-        public override void UseItemEffect()
+        public override void UseItemEffect(Player player)
         {
-            GlobalTarget.EquipArmor(this);
+            player.EquipArmor(this);
         }
     }
 }

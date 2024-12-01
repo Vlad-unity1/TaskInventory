@@ -4,19 +4,18 @@ using UnityEngine;
 
 namespace MessageInfo
 {
-    public static class Message
+    public class Message
     {
         public const string ITEM_ADD_FAILED = "Не удалось добавить предмет!";
         public const string ITEM_USE_FAILED = "Не удалось использовать предмет!";
         public const string ITEM_ADDED = "Предмет успешно добавлен!";
         public const string ITEM_REMOVED = "Предмет успешно удален!";
-        public static string ITEM_USED = "Предмет успешно использован!";
-        public static string BOOK_USED = "Книга не может быть повтороно использована!";
-        public static string BOOK_ALREADY_READ = "Попытка повтороного прочтения книги!";
-        public static string POTION_USED = " ";
-        public static string MAX_STACK = "Максимальный стак предмета!";
+        public const string ITEM_USED = "Предмет успешно использован!";
+        public const string BOOK_USED = "Книга не может быть повтороно использована!";
+        public const string BOOK_ALREADY_READ = "Попытка повтороного прочтения книги!";
+        public const string MAX_STACK = "Максимальный стак предмета!";
 
-        public static IEnumerator ShowMessage(TextMeshProUGUI messageText, string message, float displayTime = 2f)
+        public IEnumerator ShowMessage(TextMeshProUGUI messageText, string message, float displayTime = 2f)
         {
             messageText.text = message;
             messageText.gameObject.SetActive(true);

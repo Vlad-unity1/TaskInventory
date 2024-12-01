@@ -11,13 +11,7 @@ namespace ItemScriptable
         public float Weight;
         public bool IsStackable;
         public Sprite Image;
-        public static Player GlobalTarget { get; private set; }
 
-        public static void SetGlobalTarget(Player player)
-        {
-            GlobalTarget = player;
-        }
-
-        public virtual void UseItemEffect() { }
+        public virtual void UseItemEffect(Player player) { }
     }
 }

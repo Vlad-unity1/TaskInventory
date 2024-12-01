@@ -1,6 +1,7 @@
 ﻿using Armor;
 using ItemScriptable;
 using MessageInfo;
+using Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -71,11 +72,11 @@ namespace InventorySystem
             throw new Exception("попытка удалить предмет которого нет в инвентаре");
         }
 
-        public void UseItem(ItemData item)
+        public void UseItem(ItemData item, Player player)
         {
             if (_items.Contains(item))
             {
-                item.UseItemEffect();
+                item.UseItemEffect(player);
                 OnItemUsed?.Invoke(Message.ITEM_USED);
                 OnWeightChanged?.Invoke();
                 RemoveItem(item);
@@ -114,6 +115,11 @@ namespace InventorySystem
         {
             int current = _items.Count(i => i == item);
             return current;
+        }
+
+        public bool ContainsItem(ItemData item)
+        {
+            return _items.Contains(item); 
         }
     }
 }

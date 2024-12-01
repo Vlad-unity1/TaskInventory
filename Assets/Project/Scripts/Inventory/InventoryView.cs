@@ -2,7 +2,9 @@
 using Book;
 using InventorySystem;
 using ItemInspector;
+using ItemScriptable;
 using MessageInfo;
+using Model;
 using Potion;
 using System.Collections.Generic;
 using TMPro;
@@ -28,10 +30,14 @@ namespace ViewInventory
         [SerializeField] private List<Sprite> _usedSlots = new();
         [SerializeField] private Image _lastItemImage;
         private Inventory _inventory;
+        private Player _player;
+        private Message _message;
 
-        public void Initialize(Inventory inventory)
+        public void Initialize(Inventory inventory, Player player, Message message)
         {
             _inventory = inventory;
+            _player = player;
+            _message = message;
             _inventoryPanel.SetActive(false);
 
             _inventory.OnItemAdded += ShowErrorMessage;
@@ -50,9 +56,15 @@ namespace ViewInventory
         public void TryToUse(int slotIndex)
         {
             var item = _slots[slotIndex].ItemData;
-            _inventory.UseItem(item);
+
+            if (!_inventory.ContainsItem(item))
+            {
+                return;
+            }
+
+            _inventory.UseItem(item, _player);
             _currentStack[slotIndex].text = _inventory.CurrentStack(item).ToString();
-            DeleteSlotImageTexture(_slots[slotIndex]);
+            DeleteSlotImageTexture(_slots[slotIndex], item);
             LastItemUsed(item.Image);
 
             if (item is ArmorEffect || item is WeaponEffect)
@@ -60,9 +72,10 @@ namespace ViewInventory
                 SetSlotImageTexture(_slots[slotIndex], item.Image);
             }
 
-            if (item is PotionEffect)
+            if (item is PotionEffect potionEffect)
             {
-                StartCoroutine(Message.ShowMessage(_potionMessage, Message.POTION_USED));
+                string potionMessage = $"Зелье восстановило {potionEffect.HealthAmount} здоровья!";
+                StartCoroutine(_message.ShowMessage(_potionMessage, potionMessage));
             }
 
             if (item is BookEffect)
@@ -87,7 +100,7 @@ namespace ViewInventory
             if (_inventory.RemoveItem(item))
             {
                 _currentStack[slotIndex].text = _inventory.CurrentStack(item).ToString();
-                DeleteSlotImageTexture(_slots[slotIndex]);
+                DeleteSlotImageTexture(_slots[slotIndex], item);
             }
         }
 
@@ -123,11 +136,14 @@ namespace ViewInventory
             }
         }
 
-        private void DeleteSlotImageTexture(ItemHolder slot)
+        private void DeleteSlotImageTexture(ItemHolder slot, ItemData item)
         {
             if (slot.TryGetComponent<Image>(out var rawImage))
             {
-                rawImage.sprite = null;
+                if (_inventory.CurrentStack(item) <= 0)
+                {
+                    rawImage.sprite = null;
+                }
             }
         }
 
@@ -139,8 +155,7 @@ namespace ViewInventory
 
         private void ShowErrorMessage(string message)
         {
-            StartCoroutine(Message.ShowMessage(_errorMessageText, message));
+            StartCoroutine(_message.ShowMessage(_errorMessageText, message));
         }
-
     }
 }

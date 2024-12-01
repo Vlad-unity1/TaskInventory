@@ -24,10 +24,12 @@ namespace View
         private Player _playerModel;
         private GameObject _equippedWeaponInstance;
         private GameObject _equippedArmorInstance;
+        private Message _messageInstance;
 
-        public void Initialize(Player model)
+        public void Initialize(Player model, Message message)
         {
             _playerModel = model;
+            _messageInstance = message;
             UpdatePlayerUI();
 
             _takeDamageButton.onClick.AddListener(() => TakeDamage(30));
@@ -90,7 +92,7 @@ namespace View
 
         private void ShowInfoMessage(string message)
         {
-            StartCoroutine(Message.ShowMessage(_infoBookText, message));
+            StartCoroutine(_messageInstance.ShowMessage(_infoBookText, message));
         }
     }
 }

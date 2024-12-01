@@ -1,5 +1,5 @@
 using ItemScriptable;
-using MessageInfo;
+using Model;
 using UnityEngine;
 
 namespace Potion
@@ -9,10 +9,9 @@ namespace Potion
     {
         [field: SerializeField] public int HealthAmount { get; private set; }
 
-        public override void UseItemEffect()
+        public override void UseItemEffect(Player player)
         {
-            GlobalTarget.Heal(HealthAmount);
-            Message.POTION_USED = $"+{HealthAmount} HP";
+            player.Heal(HealthAmount);
         }
     }
 }

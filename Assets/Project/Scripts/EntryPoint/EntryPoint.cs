@@ -1,4 +1,4 @@
-using ItemScriptable;
+using MessageInfo;
 using Model;
 using UnityEngine;
 using View;
@@ -14,9 +14,9 @@ namespace EntryPoinInProject
         private void Awake()
         {
             Player player = new(200, 200);
-            _playerView.Initialize(player);
-            _inventoryController.Initialize(player.Inventory);
-            ItemData.SetGlobalTarget(player);
+            Message message = new();
+            _playerView.Initialize(player, message);
+            _inventoryController.Initialize(player.Inventory, player, message);
         }
     }
 }

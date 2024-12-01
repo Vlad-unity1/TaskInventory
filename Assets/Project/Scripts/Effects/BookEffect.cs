@@ -1,4 +1,5 @@
 using ItemScriptable;
+using Model;
 using UnityEngine;
 
 namespace Book
@@ -8,9 +9,9 @@ namespace Book
     {
         [field: SerializeField] public int EXP { get; private set; }
 
-        public override void UseItemEffect()
+        public override void UseItemEffect(Player player)
         {
-            GlobalTarget.ReadBook(this);
+            player.ReadBook(this);
         }
     }
 }
