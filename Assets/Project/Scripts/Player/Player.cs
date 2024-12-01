@@ -17,15 +17,14 @@ namespace Model
         public event Action<WeaponEffect> OnWeaponEquipped;
         public event Action<ArmorEffect> OnArmorEquipped;
 
-        private int _currentHP;
         public int CurrentHP
         {
-            get => _currentHP;
+            get => _currentHp;
             private set
             {
-                if (_currentHP != value)
+                if (_currentHp != value)
                 {
-                    _currentHP = value;
+                    _currentHp = value;
                     OnHealthChanged?.Invoke();
                 }
             }
@@ -34,6 +33,7 @@ namespace Model
         public int Exp { get; private set; }
         public Inventory Inventory { get; private set; }
         public List<BookEffect> _readBooks { get; private set; }
+        private int _currentHp;
         private WeaponEffect _equippedWeapon;
         private ArmorEffect _equippedArmor;
 
