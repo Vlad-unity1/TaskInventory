@@ -65,9 +65,9 @@ namespace View
 
         private void EquipWeapon(WeaponEffect weapon)
         {
-            if (_equippedWeaponInstance != null)
+            if (_equippedArmorInstance != null)
             {
-                Destroy(_equippedWeaponInstance);
+                Destroy(_equippedArmorInstance);
             }
 
             _equippedWeaponInstance = Instantiate(weapon.WeaponPrefab, _weaponSlot.transform);
@@ -75,9 +75,9 @@ namespace View
 
         private void EquipArmor(ArmorEffect armor)
         {
-            if (_equippedArmorInstance != null)
+            if (_equippedWeaponInstance != null)
             {
-                Destroy(_equippedArmorInstance);
+                Destroy(_equippedWeaponInstance);
             }
 
             _equippedArmorInstance = Instantiate(armor.ArmorPrefab, _armorSlot.transform);

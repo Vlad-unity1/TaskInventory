@@ -32,7 +32,7 @@ namespace Model
         public int MaxHP { get; private set; }
         public int Exp { get; private set; }
         public Inventory Inventory { get; private set; }
-        public List<BookEffect> _readBooks { get; private set; }
+        public List<BookEffect> ReadBooks { get; private set; }
         private int _currentHp;
         private WeaponEffect _equippedWeapon;
         private ArmorEffect _equippedArmor;
@@ -44,7 +44,7 @@ namespace Model
             CurrentHP = MaxHP;
             Exp = 0;
             Inventory = new Inventory(maxInventoryWeight);
-            _readBooks = new List<BookEffect>();
+            ReadBooks = new List<BookEffect>();
         }
 
         public void Heal(int amount)
@@ -89,9 +89,9 @@ namespace Model
 
         public void ReadBook(BookEffect book)
         {
-            if (!_readBooks.Contains(book))
+            if (!ReadBooks.Contains(book))
             {
-                _readBooks.Add(book);
+                ReadBooks.Add(book);
                 Experience(book.EXP);
                 OnBookReaded?.Invoke(Message.BOOK_USED);
             }
