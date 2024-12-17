@@ -1,125 +1,146 @@
-﻿using Armor;
+﻿using Book;
+using ItemInspector;
 using ItemScriptable;
-using MessageInfo;
 using Model;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using Weapon;
+using UnityEngine;
 
 namespace InventorySystem
 {
     public class Inventory
     {
         public event Action OnWeightChanged;
-        public event Action<string> OnItemAdded;
-        public event Action<string> OnItemRemoved;
-        public event Action<string> OnItemUsed;
-        public event Action OnReturnItem;
-
         public float MaxWeight { get; private set; }
         public float CurrentWeight { get; private set; }
-        private readonly List<ItemData> _items = new();
+        public List<ItemHolder> Slots { get; private set; } = new();
 
-        public Inventory(float maxWeight)
+        public Inventory(int maxSlots, float maxWeight)
         {
             MaxWeight = maxWeight;
+            Slots = new List<ItemHolder>(maxSlots);
+
+            for (int i = 0; i < maxSlots; i++)
+            {
+                Slots.Add(new ItemHolder());
+            }
         }
 
-        public bool TryAddItem(ItemData item)
+        public int TryAddItem(ItemData item, int amount)
         {
-            if (CurrentWeight + item.Weight > MaxWeight)
+            for (int i = 0; i < Slots.Count; i++)
             {
-                OnItemAdded?.Invoke(Message.ITEM_ADD_FAILED);
-                return false;
-            }
-
-            if (_items.Contains(item))
-            {
-                if (item.IsStackable)
+                if (!Slots[i].IsEmpty && Slots[i].GetItem() == item && item.IsStackable)
                 {
-                    int currentStack = _items.Count(i => i == item);
-                    if (currentStack < item.MaxStack)
+                    int currentAmount = Slots[i].GetAmount();
+                    int newAmount = Mathf.Min(currentAmount, item.MaxStack);
+
+                    if (currentAmount < item.MaxStack)
                     {
-                        _items.Add(item);
-                        CurrentWeight += item.Weight;
-                        OnWeightChanged?.Invoke();
-                        OnItemAdded?.Invoke(Message.ITEM_ADDED);
+                        Slots[i].SetItem(item, newAmount);
+                        UpdateWeight(item.Weight, true);
+                        return i;
                     }
                 }
             }
-            else
+
+            for (int i = 0; i < Slots.Count; i++)
             {
-                _items.Add(item);
-                CurrentWeight += item.Weight;
-                OnWeightChanged?.Invoke();
-                OnItemAdded?.Invoke(Message.ITEM_ADDED);
+                if (Slots[i].IsEmpty)
+                {
+                    Slots[i].SetItem(item, amount);
+                    UpdateWeight(item.Weight, true);
+                    return i;
+                }
             }
 
-            return true;
+            return -1;
         }
 
-        public bool RemoveItem(ItemData item)
+        public int RemoveItem(ItemData item, int amount, int slotindex)
         {
-            if (_items.Remove(item))
+            var slot = Slots[slotindex];
+            var currentItem = slot.GetItem();
+
+            if (!slot.IsEmpty && currentItem == item)
             {
-                CurrentWeight -= item.Weight;
-                OnWeightChanged?.Invoke();
-                OnItemRemoved?.Invoke(Message.ITEM_REMOVED);
-                return true;
+                slot.DecreaseAmount(amount);
+
+                UpdateWeight(item.Weight, false);
+                return slotindex;
             }
 
-            throw new Exception("попытка удалить предмет которого нет в инвентаре");
+            return -1;
+            throw new Exception("Попытка удалить предмет, которого нет в инвентаре");
         }
 
-        public void UseItem(ItemData item, Player player)
+        public int UseItem(ItemData item, Player player, int slotindex)
         {
-            if (_items.Contains(item))
+            if (slotindex >= 0 && slotindex < Slots.Count)
             {
-                item.UseItemEffect(player);
-                OnItemUsed?.Invoke(Message.ITEM_USED);
-                OnWeightChanged?.Invoke();
-                RemoveItem(item);
+                var slot = Slots[slotindex];
+                var currentItem = slot.GetItem();
+
+                if (!slot.IsEmpty && currentItem == item)
+                {
+                    if (item is BookEffect)
+                    {
+                        item.UseItemEffect(player);
+                    }
+                    else
+                    {
+                        item.UseItemEffect(player);
+                        slot.DecreaseAmount(1);
+                        UpdateWeight(item.Weight, false);
+                        return slotindex;
+                    }
+                }
             }
-            else
-            {
-                OnItemUsed?.Invoke(Message.ITEM_USE_FAILED);
-            }
+
+            return -1;
         }
 
         public void ReturnItem(ItemData item)
         {
-            if (item == null) return;
+            for (int i = 0; i < Slots.Count; i++)
+            {
+                if (Slots[i].IsEmpty)
+                {
+                    Slots[i].SetItem(item, 1);
+                    UpdateWeight(item.Weight, true);
+                    return;
+                }
+            }
 
-            if (item is WeaponEffect weapon)
-            {
-                if (!_items.Contains(weapon))
-                {
-                    _items.Add(weapon);
-                    CurrentWeight += weapon.Weight;
-                    OnReturnItem?.Invoke();
-                }
-            }
-            else if (item is ArmorEffect armor)
-            {
-                if (!_items.Contains(armor))
-                {
-                    _items.Add(armor);
-                    CurrentWeight += armor.Weight;
-                    OnReturnItem?.Invoke();
-                }
-            }
+            throw new Exception("Инвентарь переполнен, невозможно вернуть предмет.");
         }
 
         public int CurrentStack(ItemData item)
         {
-            int current = _items.Count(i => i == item);
+            int current = 0;
+            foreach (var slot in Slots)
+            {
+                if (!slot.IsEmpty && slot.GetItem() == item)
+                {
+                    current += slot.GetAmount();
+                }
+            }
+
             return current;
         }
 
-        public bool ContainsItem(ItemData item)
+        private void UpdateWeight(float weight, bool add)
         {
-            return _items.Contains(item); 
+            if (add)
+            {
+                CurrentWeight += weight;
+            }
+            else
+            {
+                CurrentWeight -= weight;
+            }
+
+            OnWeightChanged?.Invoke();
         }
     }
 }

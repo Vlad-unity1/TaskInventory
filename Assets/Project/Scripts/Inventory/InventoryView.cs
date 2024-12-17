@@ -1,11 +1,11 @@
 ﻿using Armor;
 using Book;
+using Cell;
 using InventorySystem;
 using ItemInspector;
-using ItemScriptable;
-using MessageInfo;
 using Model;
 using Potion;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -16,146 +16,136 @@ namespace ViewInventory
 {
     public class InventoryView : MonoBehaviour
     {
-        [SerializeField] private Button _openInventory;
-        [SerializeField] private GameObject _inventoryPanel;
-        [SerializeField] private ItemHolder[] _slots;
-        [SerializeField] private Button[] _useButtons;
-        [SerializeField] private Button[] _addButtons;
-        [SerializeField] private Button[] _removeButtons;
         [SerializeField] private TextMeshProUGUI _errorMessageText;
         [SerializeField] private TextMeshProUGUI[] _currentStack;
         [SerializeField] private TextMeshProUGUI _potionMessage;
         [SerializeField] private TextMeshProUGUI _bookStatusText;
         [SerializeField] private Sprite _bookImage;
-        [SerializeField] private List<Sprite> _usedSlots = new();
-        [SerializeField] private Image _lastItemImage;
+        [SerializeField] private Sprite _bookReadImage;
+        [SerializeField] private Image[] _slotImages;
+        [SerializeField] private List<CellofInventory> _cells;
+        [SerializeField] private HolderInScene _itemData;
+
+        public int SlotIndex { get; private set; }
+        private Coroutine _hideErrorMessageCoroutine;
+
         private Inventory _inventory;
         private Player _player;
-        private Message _message;
+        private List<ItemHolder> _slots;
 
-        public void Initialize(Inventory inventory, Player player, Message message)
+        public void Initialize(Inventory inventory, Player player)
         {
             _inventory = inventory;
             _player = player;
-            _message = message;
-            _inventoryPanel.SetActive(false);
+            _slots = _inventory.Slots;
 
-            _inventory.OnItemAdded += ShowErrorMessage;
-            _inventory.OnItemRemoved += ShowErrorMessage;
-            _inventory.OnItemUsed += ShowErrorMessage;
-            _inventory.OnReturnItem += UpdateStackCounts;
-
-            UpdateStackCounts();
-        }
-
-        public void ToggleInventory()
-        {
-            _inventoryPanel.SetActive(!_inventoryPanel.activeSelf);
+            for (int i = 0; i < _slots.Count; i++)
+            {
+                _cells[i].SetSlot(_slots[i]);
+            }
         }
 
         public void TryToUse(int slotIndex)
         {
-            var item = _slots[slotIndex].ItemData;
-
-            if (!_inventory.ContainsItem(item))
-            {
-                return;
-            }
-
-            _inventory.UseItem(item, _player);
-            _currentStack[slotIndex].text = _inventory.CurrentStack(item).ToString();
-            DeleteSlotImageTexture(_slots[slotIndex], item);
-            LastItemUsed(item.Image);
+            var item = _slots[slotIndex].GetItem();
+            SlotIndex = slotIndex;
+            _inventory.UseItem(item, _player, SlotIndex);
+            SyncInventoryUI();
 
             if (item is ArmorEffect || item is WeaponEffect)
             {
-                SetSlotImageTexture(_slots[slotIndex], item.Image);
+                SetSlotImageTexture(slotIndex, item.Image);
             }
 
             if (item is PotionEffect potionEffect)
             {
                 string potionMessage = $"Зелье восстановило {potionEffect.HealthAmount} здоровья!";
-                StartCoroutine(_message.ShowMessage(_potionMessage, potionMessage));
+                _potionMessage.text = potionMessage;
             }
 
-            if (item is BookEffect)
+            if (item is BookEffect book)
             {
-                UpdateBookStatus(true);
+                UpdateBookSprite(slotIndex, book);
             }
+
+            ShowErrorMessage("Предмет успешно использован!");
         }
 
-        public void TryAddItem(int slotIndex)
+        public void TryAddItem()
         {
-            var item = _slots[slotIndex].ItemData;
-            if (_inventory.TryAddItem(item))
+            var item = _itemData.GetItem();
+            int addedSlotIndex = _inventory.TryAddItem(item, 1);
+
+            if (addedSlotIndex != -1)
             {
-                _currentStack[slotIndex].text = _inventory.CurrentStack(item).ToString();
-                SetSlotImageTexture(_slots[slotIndex], item.Image);
+                _currentStack[addedSlotIndex].text = _slots[addedSlotIndex].GetAmount().ToString();
+                SetSlotImageTexture(addedSlotIndex, item.Image);
+                ShowErrorMessage("Предмет успешно добавлен!");
             }
         }
 
         public void TryRemoveItem(int slotIndex)
         {
-            var item = _slots[slotIndex].ItemData;
-            if (_inventory.RemoveItem(item))
+            var item = _slots[slotIndex].GetItem();
+            SlotIndex = slotIndex;
+            _inventory.RemoveItem(item, 1, slotIndex);
+            SyncInventoryUI();
+            ShowErrorMessage("Предмет успешно удален!");
+        }
+
+        private void SyncInventoryUI()
+        {
+            var slot = _slots[SlotIndex];
+            var amount = slot.GetAmount();
+
+            SetStackText(SlotIndex, amount.ToString());
+
+            if (amount <= 0)
             {
-                _currentStack[slotIndex].text = _inventory.CurrentStack(item).ToString();
-                DeleteSlotImageTexture(_slots[slotIndex], item);
+                SetSlotImageTexture(SlotIndex, null);
             }
         }
 
-        private void UpdateStackCounts()
+        private void SetStackText(int slotIndex, string text)
         {
-            for (int i = 0; i < _slots.Length; i++)
+            _currentStack[slotIndex].text = text;
+        }
+
+        public void UpdateBookSprite(int slotIndex, BookEffect book)
+        {
+            if (_player.ReadBooks.Contains(book))
             {
-                var item = _slots[i].ItemData;
-                if (item != null)
-                {
-                    _currentStack[i].text = _inventory.CurrentStack(item).ToString();
-                }
-                else
-                {
-                    _currentStack[i].text = "0";
-                }
+                _slotImages[slotIndex].sprite = _bookReadImage;
+            }
+            else
+            {
+                _slotImages[slotIndex].sprite = _bookImage;
             }
         }
 
-        public void UpdateBookStatus(bool isRead)
+        private void SetSlotImageTexture(int slotIndex, Sprite texture)
         {
-            if (isRead)
+            if (_slotImages[slotIndex] != null)
             {
-                _bookStatusText.text = "Used";
+                _slotImages[slotIndex].sprite = texture;
             }
         }
 
-        private void SetSlotImageTexture(ItemHolder slot, Sprite texture)
+        private IEnumerator HideErrorMessageAfterDelay(float delay)
         {
-            if (slot.TryGetComponent<Image>(out var rawImage))
-            {
-                rawImage.sprite = texture;
-            }
-        }
-
-        private void DeleteSlotImageTexture(ItemHolder slot, ItemData item)
-        {
-            if (slot.TryGetComponent<Image>(out var rawImage))
-            {
-                if (_inventory.CurrentStack(item) <= 0)
-                {
-                    rawImage.sprite = null;
-                }
-            }
-        }
-
-        private void LastItemUsed(Sprite texture)
-        {
-            _usedSlots.Add(texture);
-            _lastItemImage.sprite = texture;
+            yield return new WaitForSeconds(delay);
+            _errorMessageText.text = "";
         }
 
         private void ShowErrorMessage(string message)
         {
-            StartCoroutine(_message.ShowMessage(_errorMessageText, message));
+            if (_hideErrorMessageCoroutine != null)
+            {
+                StopCoroutine(_hideErrorMessageCoroutine);
+            }
+
+            _errorMessageText.text = message;
+            _hideErrorMessageCoroutine = StartCoroutine(HideErrorMessageAfterDelay(2f));
         }
     }
 }

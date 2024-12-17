@@ -1,5 +1,4 @@
-using Armor;
-using MessageInfo;
+﻿using Armor;
 using Model;
 using TMPro;
 using UnityEngine;
@@ -24,12 +23,10 @@ namespace View
         private Player _playerModel;
         private GameObject _equippedWeaponInstance;
         private GameObject _equippedArmorInstance;
-        private Message _messageInstance;
 
-        public void Initialize(Player model, Message message)
+        public void Initialize(Player model)
         {
             _playerModel = model;
-            _messageInstance = message;
             UpdatePlayerUI();
 
             _takeDamageButton.onClick.AddListener(() => TakeDamage(30));
@@ -40,6 +37,15 @@ namespace View
             _playerModel.OnWeaponEquipped += EquipWeapon;
             _playerModel.OnArmorEquipped += EquipArmor;
             _playerModel.OnBookReaded += ShowInfoMessage;
+        }
+        private void OnDestroy()
+        {
+            _playerModel.OnHealthChanged -= UpdateHealthUI;
+            _playerModel.Inventory.OnWeightChanged -= UpdateInventoryUI;
+            _playerModel.OnExpChanged -= UpdateExpUI;
+            _playerModel.OnWeaponEquipped -= EquipWeapon;
+            _playerModel.OnArmorEquipped -= EquipArmor;
+            _playerModel.OnBookReaded -= ShowInfoMessage;
         }
 
         private void UpdateHealthUI()
@@ -92,7 +98,7 @@ namespace View
 
         private void ShowInfoMessage(string message)
         {
-            StartCoroutine(_messageInstance.ShowMessage(_infoBookText, message));
+            // тут было про книгу
         }
     }
 }

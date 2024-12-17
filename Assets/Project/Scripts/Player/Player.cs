@@ -1,7 +1,6 @@
 ﻿using Armor;
 using Book;
 using InventorySystem;
-using MessageInfo;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -37,13 +36,12 @@ namespace Model
         private WeaponEffect _equippedWeapon;
         private ArmorEffect _equippedArmor;
 
-
         public Player(int maxHP, float maxInventoryWeight)
         {
             MaxHP = maxHP;
             CurrentHP = MaxHP;
             Exp = 0;
-            Inventory = new Inventory(maxInventoryWeight);
+            Inventory = new Inventory(9, maxInventoryWeight);
             ReadBooks = new List<BookEffect>();
         }
 
@@ -93,11 +91,11 @@ namespace Model
             {
                 ReadBooks.Add(book);
                 Experience(book.EXP);
-                OnBookReaded?.Invoke(Message.BOOK_USED);
+                OnBookReaded?.Invoke("Книга прочитана, опыт получен");
             }
             else
             {
-                OnBookReaded?.Invoke(Message.BOOK_ALREADY_READ);
+                OnBookReaded?.Invoke("Эта книга была прочитана");
             }
         }
     }

@@ -11,7 +11,10 @@ namespace Book
 
         public override void UseItemEffect(Player player)
         {
-            player.ReadBook(this);
+            if (!player.ReadBooks.Contains(this))
+            {
+                player.ReadBook(this);
+            }
         }
     }
 }
