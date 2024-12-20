@@ -1,4 +1,6 @@
-﻿using ItemScriptable;
+﻿using ArmorItem;
+using ItemScriptable;
+using WeaponItem;
 
 namespace ItemInspector
 {

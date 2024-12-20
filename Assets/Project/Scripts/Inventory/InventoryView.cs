@@ -12,6 +12,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using WeaponItem;
+using static UnityEditor.Progress;
 
 namespace ViewInventory
 {
@@ -100,6 +101,7 @@ namespace ViewInventory
         {
             var item = _slots[slotIndex].GetItem();
             SlotIndex = slotIndex;
+
             _inventory.RemoveItem(item, 1, slotIndex);
             SyncInventoryUI();
             ShowErrorMessage("Предмет успешно удален!");
@@ -123,7 +125,7 @@ namespace ViewInventory
             _currentStack[slotIndex].text = text;
         }
 
-        public void UpdateBookSprite(int slotIndex, BookItem.Book book)
+        public void UpdateBookSprite(int slotIndex, Book book)
         {
             if (_player.ReadBookIDs.Contains(book.RandomID))
             {

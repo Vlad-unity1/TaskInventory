@@ -39,6 +39,7 @@ namespace View
             _playerModel.OnArmorEquipped += EquipArmor;
             _playerModel.OnBookReaded += ShowInfoMessage;
         }
+
         private void OnDestroy()
         {
             _playerModel.OnHealthChanged -= UpdateHealthUI;

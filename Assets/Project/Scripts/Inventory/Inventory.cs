@@ -2,6 +2,7 @@
 using BookItem;
 using ItemInspector;
 using ItemScriptable;
+using JetBrains.Annotations;
 using Model;
 using System;
 using System.Collections.Generic;
@@ -115,21 +116,6 @@ namespace InventorySystem
             }
 
             throw new Exception("Инвентарь переполнен, невозможно вернуть предмет.");
-        }
-
-        public int CurrentStack(ItemData item)
-        {
-            int current = 0;
-
-            foreach (var slot in Slots)
-            {
-                if (!slot.IsEmpty && slot.GetItem() == item)
-                {
-                    current += slot.GetAmount();
-                }
-            }
-
-            return current;
         }
 
         private void UpdateWeight(float weight, bool add)
