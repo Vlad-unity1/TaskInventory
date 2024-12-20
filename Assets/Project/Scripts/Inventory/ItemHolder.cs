@@ -1,5 +1,6 @@
 ﻿using ArmorItem;
 using ItemScriptable;
+using Unity.VisualScripting;
 using WeaponItem;
 
 namespace ItemInspector
