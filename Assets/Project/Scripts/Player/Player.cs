@@ -1,10 +1,10 @@
-﻿using Armor;
-using Book;
+﻿using ArmorItem;
+using BookItem;
 using InventorySystem;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using Weapon;
+using WeaponItem;
 
 namespace Model
 {
@@ -13,8 +13,8 @@ namespace Model
         public event Action OnHealthChanged;
         public event Action OnExpChanged;
         public event Action<string> OnBookReaded;
-        public event Action<WeaponEffect> OnWeaponEquipped;
-        public event Action<ArmorEffect> OnArmorEquipped;
+        public event Action<Weapon> OnWeaponEquipped;
+        public event Action<Armor> OnArmorEquipped;
 
         public int CurrentHP
         {
@@ -30,11 +30,12 @@ namespace Model
         }
         public int MaxHP { get; private set; }
         public int Exp { get; private set; }
-        public Inventory Inventory { get; private set; }
-        public List<BookEffect> ReadBooks { get; private set; }
         private int _currentHp;
-        private WeaponEffect _equippedWeapon;
-        private ArmorEffect _equippedArmor;
+
+        public Inventory Inventory { get; private set; }
+        public List<string> ReadBookIDs { get; private set; } = new List<string>();
+        private Weapon _equippedWeapon;
+        private Armor _equippedArmor;
 
         public Player(int maxHP, float maxInventoryWeight)
         {
@@ -42,7 +43,6 @@ namespace Model
             CurrentHP = MaxHP;
             Exp = 0;
             Inventory = new Inventory(9, maxInventoryWeight);
-            ReadBooks = new List<BookEffect>();
         }
 
         public void Heal(int amount)
@@ -55,24 +55,22 @@ namespace Model
             CurrentHP = Mathf.Max(CurrentHP - damage, 0);
         }
 
-        public void EquipWeapon(WeaponEffect weapon)
+        public void EquipWeapon(Weapon weapon)
         {
-            if (_equippedArmor != null)
+            if (_equippedWeapon != null)
             {
-                Inventory.ReturnItem(_equippedArmor);
-                _equippedArmor = null;
+                Inventory.ReturnItem(_equippedWeapon);
             }
 
             _equippedWeapon = weapon;
             OnWeaponEquipped?.Invoke(weapon);
         }
 
-        public void EquipArmor(ArmorEffect armor)
+        public void EquipArmor(Armor armor)
         {
-            if (_equippedWeapon != null)
+            if (_equippedArmor != null)
             {
-                Inventory.ReturnItem(_equippedWeapon);
-                _equippedWeapon = null;
+                Inventory.ReturnItem(_equippedArmor);
             }
 
             _equippedArmor = armor;
@@ -85,18 +83,17 @@ namespace Model
             OnExpChanged?.Invoke();
         }
 
-        public void ReadBook(BookEffect book)
+        public void ReadBook(Book book)
         {
-            if (!ReadBooks.Contains(book))
+            if (ReadBookIDs.Contains(book.RandomID))
             {
-                ReadBooks.Add(book);
-                Experience(book.EXP);
-                OnBookReaded?.Invoke("Книга прочитана, опыт получен");
+                OnBookReaded?.Invoke("Эта книга уже прочитана!");
+                return;
             }
-            else
-            {
-                OnBookReaded?.Invoke("Эта книга была прочитана");
-            }
+
+            ReadBookIDs.Add(book.RandomID);
+            Experience(book.EXP);
+            OnBookReaded?.Invoke($"Книга прочитана! Получено {book.EXP} опыта.");
         }
     }
 }

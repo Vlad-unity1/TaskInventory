@@ -1,9 +1,10 @@
-﻿using Armor;
+﻿using ArmorItem;
 using Model;
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using Weapon;
+using WeaponItem;
 
 namespace View
 {
@@ -69,21 +70,21 @@ namespace View
             UpdateHealthUI();
         }
 
-        private void EquipWeapon(WeaponEffect weapon)
+        private void EquipWeapon(WeaponItem.Weapon weapon)
         {
-            if (_equippedArmorInstance != null)
+            if (_equippedWeaponInstance != null)
             {
-                Destroy(_equippedArmorInstance);
+                Destroy(_equippedWeaponInstance);
             }
 
             _equippedWeaponInstance = Instantiate(weapon.WeaponPrefab, _weaponSlot.transform);
         }
 
-        private void EquipArmor(ArmorEffect armor)
+        private void EquipArmor(ArmorItem.Armor armor)
         {
-            if (_equippedWeaponInstance != null)
+            if (_equippedArmorInstance != null)
             {
-                Destroy(_equippedWeaponInstance);
+                Destroy(_equippedArmorInstance);
             }
 
             _equippedArmorInstance = Instantiate(armor.ArmorPrefab, _armorSlot.transform);
@@ -98,7 +99,14 @@ namespace View
 
         private void ShowInfoMessage(string message)
         {
-            // тут было про книгу
+            _infoBookText.text = message;
+            StartCoroutine(HideInfoMessageAfterDelay(3f));
+        }
+
+        private IEnumerator HideInfoMessageAfterDelay(float delay)
+        {
+            yield return new WaitForSeconds(delay);
+            _infoBookText.text = "";
         }
     }
 }

@@ -1,10 +1,12 @@
-﻿using Book;
+﻿using ArmorItem;
+using BookItem;
 using ItemInspector;
 using ItemScriptable;
 using Model;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using WeaponItem;
 
 namespace InventorySystem
 {
@@ -83,7 +85,7 @@ namespace InventorySystem
 
                 if (!slot.IsEmpty && currentItem == item)
                 {
-                    if (item is BookEffect)
+                    if (item is Book)
                     {
                         item.UseItemEffect(player);
                     }
@@ -118,6 +120,7 @@ namespace InventorySystem
         public int CurrentStack(ItemData item)
         {
             int current = 0;
+
             foreach (var slot in Slots)
             {
                 if (!slot.IsEmpty && slot.GetItem() == item)

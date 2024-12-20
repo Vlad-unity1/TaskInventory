@@ -1,16 +1,17 @@
-﻿using Armor;
-using Book;
+﻿using ArmorItem;
+using BookItem;
 using Cell;
 using InventorySystem;
 using ItemInspector;
+using ItemsHolder;
 using Model;
-using Potion;
+using PotionItem;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using Weapon;
+using WeaponItem;
 
 namespace ViewInventory
 {
@@ -27,8 +28,8 @@ namespace ViewInventory
         [SerializeField] private HolderInScene _itemData;
 
         public int SlotIndex { get; private set; }
-        private Coroutine _hideErrorMessageCoroutine;
 
+        private Coroutine _hideErrorMessageCoroutine;
         private Inventory _inventory;
         private Player _player;
         private List<ItemHolder> _slots;
@@ -49,21 +50,22 @@ namespace ViewInventory
         {
             var item = _slots[slotIndex].GetItem();
             SlotIndex = slotIndex;
+
             _inventory.UseItem(item, _player, SlotIndex);
             SyncInventoryUI();
 
-            if (item is ArmorEffect || item is WeaponEffect)
+            if (item is Armor || item is Weapon)
             {
                 SetSlotImageTexture(slotIndex, item.Image);
             }
 
-            if (item is PotionEffect potionEffect)
+            if (item is Potion potionEffect)
             {
                 string potionMessage = $"Зелье восстановило {potionEffect.HealthAmount} здоровья!";
                 _potionMessage.text = potionMessage;
             }
 
-            if (item is BookEffect book)
+            if (item is Book book)
             {
                 UpdateBookSprite(slotIndex, book);
             }
@@ -74,12 +76,22 @@ namespace ViewInventory
         public void TryAddItem()
         {
             var item = _itemData.GetItem();
+
+            if (item is Book book)
+            {
+                book.GenerateRandomID();
+            }
+
             int addedSlotIndex = _inventory.TryAddItem(item, 1);
 
             if (addedSlotIndex != -1)
             {
                 _currentStack[addedSlotIndex].text = _slots[addedSlotIndex].GetAmount().ToString();
                 SetSlotImageTexture(addedSlotIndex, item.Image);
+                ShowErrorMessage("Предмет успешно добавлен!");
+            }
+            else
+            {
                 ShowErrorMessage("Предмет успешно добавлен!");
             }
         }
@@ -111,9 +123,9 @@ namespace ViewInventory
             _currentStack[slotIndex].text = text;
         }
 
-        public void UpdateBookSprite(int slotIndex, BookEffect book)
+        public void UpdateBookSprite(int slotIndex, BookItem.Book book)
         {
-            if (_player.ReadBooks.Contains(book))
+            if (_player.ReadBookIDs.Contains(book.RandomID))
             {
                 _slotImages[slotIndex].sprite = _bookReadImage;
             }

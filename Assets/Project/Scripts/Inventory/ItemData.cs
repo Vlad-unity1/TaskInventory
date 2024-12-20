@@ -9,7 +9,6 @@ namespace ItemScriptable
         public float Weight;
         public bool IsStackable;
         public Sprite Image;
-        public string Name;
 
         public virtual void UseItemEffect(Player player) { }
     }

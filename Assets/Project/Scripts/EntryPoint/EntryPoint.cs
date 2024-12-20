@@ -19,6 +19,7 @@ namespace EntryPoinInProject
             Player player = new(200, 200);
             ItemHolder holder = new();
             ItemData itemData = ScriptableObject.CreateInstance<ItemData>();
+
             _playerView.Initialize(player);
             holder.Initialize(itemData);
             _inventoryView.Initialize(player.Inventory, player);
