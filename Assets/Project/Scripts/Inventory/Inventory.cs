@@ -13,16 +13,16 @@ namespace InventorySystem
         public event Action OnWeightChanged;
         public float MaxWeight { get; private set; }
         public float CurrentWeight { get; private set; }
-        public List<ItemHolder> Slots { get; private set; } = new();
+        public List<Slot> Slots { get; private set; } = new();
 
         public Inventory(int maxSlots, float maxWeight)
         {
             MaxWeight = maxWeight;
-            Slots = new List<ItemHolder>(maxSlots);
+            Slots = new List<Slot>(maxSlots);
 
             for (int i = 0; i < maxSlots; i++)
             {
-                Slots.Add(new ItemHolder());
+                Slots.Add(new Slot());
             }
         }
 
@@ -30,9 +30,9 @@ namespace InventorySystem
         {
             for (int i = 0; i < Slots.Count; i++)
             {
-                if (!Slots[i].IsEmpty && Slots[i].GetItem() == item && item.IsStackable)
+                if (!Slots[i].IsEmpty && Slots[i].ItemData == item && item.IsStackable)
                 {
-                    int currentAmount = Slots[i].GetAmount();
+                    int currentAmount = Slots[i].Amount;
                     int newAmount = Mathf.Min(currentAmount, item.MaxStack);
 
                     if (currentAmount < item.MaxStack)
@@ -42,10 +42,7 @@ namespace InventorySystem
                         return i;
                     }
                 }
-            }
 
-            for (int i = 0; i < Slots.Count; i++)
-            {
                 if (Slots[i].IsEmpty)
                 {
                     Slots[i].SetItem(item, amount);
@@ -57,29 +54,28 @@ namespace InventorySystem
             return -1;
         }
 
-        public int RemoveItem(ItemData item, int amount, int slotindex)
+        public int RemoveItem(ItemData item, int amount, int slotIndex)
         {
-            var slot = Slots[slotindex];
-            var currentItem = slot.GetItem();
+            var slot = Slots[slotIndex];
+            var currentItem = slot.ItemData;
 
             if (!slot.IsEmpty && currentItem == item)
             {
                 slot.DecreaseAmount(amount);
 
                 UpdateWeight(item.Weight, false);
-                return slotindex;
+                return slotIndex;
             }
 
             return -1;
-            throw new Exception("Попытка удалить предмет, которого нет в инвентаре");
         }
 
-        public int UseItem(ItemData item, Player player, int slotindex)
+        public int UseItem(ItemData item, Player player, int slotIndex)
         {
-            if (slotindex >= 0 && slotindex < Slots.Count)
+            if (slotIndex >= 0 && slotIndex < Slots.Count)
             {
-                var slot = Slots[slotindex];
-                var currentItem = slot.GetItem();
+                var slot = Slots[slotIndex];
+                var currentItem = slot.ItemData;
 
                 if (!slot.IsEmpty && currentItem == item)
                 {
@@ -92,27 +88,12 @@ namespace InventorySystem
                         item.UseItemEffect(player);
                         slot.DecreaseAmount(1);
                         UpdateWeight(item.Weight, false);
-                        return slotindex;
+                        return slotIndex;
                     }
                 }
             }
 
             return -1;
-        }
-
-        public void ReturnItem(ItemData item)
-        {
-            for (int i = 0; i < Slots.Count; i++)
-            {
-                if (Slots[i].IsEmpty)
-                {
-                    Slots[i].SetItem(item, 1);
-                    UpdateWeight(item.Weight, true);
-                    return;
-                }
-            }
-
-            throw new Exception("Инвентарь переполнен, невозможно вернуть предмет.");
         }
 
         private void UpdateWeight(float weight, bool add)

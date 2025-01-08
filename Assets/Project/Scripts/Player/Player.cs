@@ -12,9 +12,10 @@ namespace Model
     {
         public event Action OnHealthChanged;
         public event Action OnExpChanged;
-        public event Action<string> OnBookReaded;
-        public event Action<Weapon> OnWeaponEquipped;
-        public event Action<Armor> OnArmorEquipped;
+        public event Action OnBookRead;
+        public event Action OnBookWasRead;
+        public event Action OnWeaponEquipped;
+        public event Action OnArmorEquipped;
 
         public int CurrentHP
         {
@@ -34,15 +35,15 @@ namespace Model
 
         public Inventory Inventory { get; private set; }
         public List<string> ReadBookIDs { get; private set; } = new List<string>();
-        private Weapon _equippedWeapon;
-        private Armor _equippedArmor;
+        public Weapon EquippedWeapon { get; private set; }
+        public Armor EquippedArmor { get; private set; }
 
-        public Player(int maxHP, float maxInventoryWeight)
+        public Player(int maxHP, float maxInventoryWeight, int inventorySize)
         {
             MaxHP = maxHP;
             CurrentHP = MaxHP;
             Exp = 0;
-            Inventory = new Inventory(9, maxInventoryWeight);
+            Inventory = new Inventory(inventorySize, maxInventoryWeight);
         }
 
         public void Heal(int amount)
@@ -57,24 +58,24 @@ namespace Model
 
         public void EquipWeapon(Weapon weapon)
         {
-            if (_equippedWeapon != null)
+            if (EquippedWeapon != null)
             {
-                Inventory.ReturnItem(_equippedWeapon);
+                Inventory.TryAddItem(EquippedWeapon, 1);
             }
 
-            _equippedWeapon = weapon;
-            OnWeaponEquipped?.Invoke(weapon);
+            EquippedWeapon = weapon;
+            OnWeaponEquipped?.Invoke();
         }
 
         public void EquipArmor(Armor armor)
         {
-            if (_equippedArmor != null)
+            if (EquippedArmor != null)
             {
-                Inventory.ReturnItem(_equippedArmor);
+                Inventory.TryAddItem(EquippedArmor, 1);
             }
 
-            _equippedArmor = armor;
-            OnArmorEquipped?.Invoke(armor);
+            EquippedArmor = armor;
+            OnArmorEquipped?.Invoke();
         }
 
         public void Experience(int experience)
@@ -87,13 +88,13 @@ namespace Model
         {
             if (ReadBookIDs.Contains(book.RandomID))
             {
-                OnBookReaded?.Invoke("Эта книга уже прочитана!");
+                OnBookWasRead?.Invoke();
                 return;
             }
 
             ReadBookIDs.Add(book.RandomID);
             Experience(book.EXP);
-            OnBookReaded?.Invoke($"Книга прочитана! Получено {book.EXP} опыта.");
+            OnBookRead?.Invoke();
         }
     }
 }

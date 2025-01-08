@@ -12,7 +12,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using WeaponItem;
-using static UnityEditor.Progress;
 
 namespace ViewInventory
 {
@@ -25,15 +24,15 @@ namespace ViewInventory
         [SerializeField] private Sprite _bookImage;
         [SerializeField] private Sprite _bookReadImage;
         [SerializeField] private Image[] _slotImages;
-        [SerializeField] private List<CellofInventory> _cells;
-        [SerializeField] private HolderInScene _itemData;
+        [SerializeField] private List<InventoryCell> _cells;
+        [SerializeField] private SlotView _itemData;
 
         public int SlotIndex { get; private set; }
 
         private Coroutine _hideErrorMessageCoroutine;
         private Inventory _inventory;
         private Player _player;
-        private List<ItemHolder> _slots;
+        private List<Slot> _slots;
 
         public void Initialize(Inventory inventory, Player player)
         {
@@ -49,7 +48,7 @@ namespace ViewInventory
 
         public void TryToUse(int slotIndex)
         {
-            var item = _slots[slotIndex].GetItem();
+            var item = _slots[slotIndex].ItemData;
             SlotIndex = slotIndex;
 
             _inventory.UseItem(item, _player, SlotIndex);
@@ -87,7 +86,7 @@ namespace ViewInventory
 
             if (addedSlotIndex != -1)
             {
-                _currentStack[addedSlotIndex].text = _slots[addedSlotIndex].GetAmount().ToString();
+                _currentStack[addedSlotIndex].text = _slots[addedSlotIndex].Amount.ToString();
                 SetSlotImageTexture(addedSlotIndex, item.Image);
                 ShowErrorMessage("Предмет успешно добавлен!");
             }
@@ -99,7 +98,7 @@ namespace ViewInventory
 
         public void TryRemoveItem(int slotIndex)
         {
-            var item = _slots[slotIndex].GetItem();
+            var item = _slots[slotIndex].ItemData;
             SlotIndex = slotIndex;
 
             _inventory.RemoveItem(item, 1, slotIndex);
@@ -110,7 +109,7 @@ namespace ViewInventory
         private void SyncInventoryUI()
         {
             var slot = _slots[SlotIndex];
-            var amount = slot.GetAmount();
+            var amount = slot.Amount;
 
             SetStackText(SlotIndex, amount.ToString());
 

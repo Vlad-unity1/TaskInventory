@@ -1,4 +1,4 @@
-using ItemScriptable;
+﻿using ItemScriptable;
 using Model;
 using UnityEngine;
 

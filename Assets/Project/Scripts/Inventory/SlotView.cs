@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace ItemsHolder
 {
-    public class HolderInScene : MonoBehaviour
+    public class SlotView : MonoBehaviour
     {
         [SerializeField] private ItemData[] _itemData;
 
