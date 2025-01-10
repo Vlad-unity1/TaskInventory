@@ -1,22 +1,20 @@
-﻿using ArmorItem;
-using BookItem;
-using Cell;
+﻿using Cell;
 using InventorySystem;
+using ItemArmor;
 using ItemInspector;
-using ItemsHolder;
+using ItemsFactory;
 using Model;
-using PotionItem;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using WeaponItem;
 
 namespace ViewInventory
 {
     public class InventoryView : MonoBehaviour
     {
+        public int SlotIndex { get; private set; }
         [SerializeField] private TextMeshProUGUI _errorMessageText;
         [SerializeField] private TextMeshProUGUI[] _currentStack;
         [SerializeField] private TextMeshProUGUI _potionMessage;
@@ -25,38 +23,39 @@ namespace ViewInventory
         [SerializeField] private Sprite _bookReadImage;
         [SerializeField] private Image[] _slotImages;
         [SerializeField] private List<InventoryCell> _cells;
-        [SerializeField] private SlotView _itemData;
 
-        public int SlotIndex { get; private set; }
-
+        private ItemFactory _itemFactory;
         private Coroutine _hideErrorMessageCoroutine;
         private Inventory _inventory;
         private Player _player;
         private List<Slot> _slots;
 
-        public void Initialize(Inventory inventory, Player player)
+        public void Initialize(Inventory inventory, Player player, ItemFactory itemFactory)
         {
             _inventory = inventory;
             _player = player;
+            _itemFactory = itemFactory;
             _slots = _inventory.Slots;
 
             for (int i = 0; i < _slots.Count; i++)
             {
                 _cells[i].SetSlot(_slots[i]);
             }
+
+            _inventory.OnInventoryChanged += SyncInventoryUI;
         }
 
         public void TryToUse(int slotIndex)
         {
-            var item = _slots[slotIndex].ItemData;
+            var item = _slots[slotIndex].Item;
             SlotIndex = slotIndex;
 
             _inventory.UseItem(item, _player, SlotIndex);
-            SyncInventoryUI();
+            SyncInventoryUI(slotIndex);
 
             if (item is Armor || item is Weapon)
             {
-                SetSlotImageTexture(slotIndex, item.Image);
+                SetSlotImageTexture(slotIndex, item.Config.Image);
             }
 
             if (item is Potion potionEffect)
@@ -73,49 +72,49 @@ namespace ViewInventory
             ShowErrorMessage("Предмет успешно использован!");
         }
 
-        public void TryAddItem()
+        public void TryAddRandomItem()
         {
-            var item = _itemData.GetItem();
-
-            if (item is Book book)
-            {
-                book.GenerateRandomID();
-            }
-
-            int addedSlotIndex = _inventory.TryAddItem(item, 1);
+            var randomItem = _itemFactory.CreateRandomItem();
+            int addedSlotIndex = _inventory.TryAddItem(randomItem, 1);
 
             if (addedSlotIndex != -1)
             {
                 _currentStack[addedSlotIndex].text = _slots[addedSlotIndex].Amount.ToString();
-                SetSlotImageTexture(addedSlotIndex, item.Image);
+                SetSlotImageTexture(addedSlotIndex, randomItem.Config.Image);
                 ShowErrorMessage("Предмет успешно добавлен!");
             }
             else
             {
-                ShowErrorMessage("Предмет успешно добавлен!");
+                ShowErrorMessage("Не удалось добавить предмет: инвентарь заполнен!");
             }
         }
 
         public void TryRemoveItem(int slotIndex)
         {
-            var item = _slots[slotIndex].ItemData;
+            var item = _slots[slotIndex].Item;
             SlotIndex = slotIndex;
 
             _inventory.RemoveItem(item, 1, slotIndex);
-            SyncInventoryUI();
+            SyncInventoryUI(slotIndex);
             ShowErrorMessage("Предмет успешно удален!");
         }
 
-        private void SyncInventoryUI()
+        private void SyncInventoryUI(int slotIndex)
         {
-            var slot = _slots[SlotIndex];
-            var amount = slot.Amount;
+            var slot = _slots[slotIndex];
 
-            SetStackText(SlotIndex, amount.ToString());
-
-            if (amount <= 0)
+            if (slot.IsEmpty)
             {
-                SetSlotImageTexture(SlotIndex, null);
+                SetSlotImageTexture(slotIndex, null);
+                SetStackText(slotIndex, "0");
+            }
+            else
+            {
+                var itemImage = slot.Item.Config.Image;
+                var itemAmount = slot.Amount.ToString();
+
+                SetSlotImageTexture(slotIndex, itemImage);
+                SetStackText(slotIndex, itemAmount);
             }
         }
 
@@ -124,9 +123,9 @@ namespace ViewInventory
             _currentStack[slotIndex].text = text;
         }
 
-        public void UpdateBookSprite(int slotIndex, Book book)
+        private void UpdateBookSprite(int slotIndex, Book book)
         {
-            if (_player.ReadBookIDs.Contains(book.RandomID))
+            if (_player.ReadBookIDs.Contains(book.Id))
             {
                 _slotImages[slotIndex].sprite = _bookReadImage;
             }

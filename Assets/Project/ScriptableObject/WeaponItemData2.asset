@@ -10,10 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a112d3d8742157f40bcbeb110902b904, type: 3}
-  m_Name: WeaponItemData 1
+  m_Name: WeaponItemData2
   m_EditorClassIdentifier: 
+  ItemName: 
+  Image: {fileID: 21300000, guid: 248001cc8c4bbad4f95d4292ef2ebd55, type: 3}
   MaxStack: 0
-  Weight: 6
+  Weight: 5
   IsStackable: 0
-  Image: {fileID: 21300000, guid: a895827080761244eaaa19f6a6a1e885, type: 3}
   _weaponPrefab: {fileID: 2326972099094290953, guid: 4195cb8be19ecf145a4359621fb5e619, type: 3}

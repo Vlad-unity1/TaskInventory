@@ -1,22 +1,20 @@
-﻿using ItemScriptable;
-
-namespace ItemInspector
+﻿namespace ItemInspector
 {
     public class Slot
     {
-        public ItemData ItemData { get; private set; }
+        public Item Item { get; private set; }
         public int Amount { get; private set; }
         public int StackCount { get; private set; }
-        public bool IsEmpty => ItemData == null || Amount == 0;
+        public bool IsEmpty => Item == null || Amount == 0;
 
-        public void SetItem(ItemData itemData, int amount)
+        public void SetItem(Item item, int amount)
         {
             if (IsEmpty)
             {
-                ItemData = itemData;
+                Item = item;
                 Amount = amount;
             }
-            else if (ItemData == itemData)
+            else if (Item.Config == item.Config)
             {
                 Amount += amount;
             }
@@ -24,7 +22,7 @@ namespace ItemInspector
 
         private void ClearSlot()
         {
-            ItemData = null;
+            Item = null;
             Amount = 0;
         }
 

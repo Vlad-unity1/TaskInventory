@@ -9,12 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a112d3d8742157f40bcbeb110902b904, type: 3}
-  m_Name: Weapon2ItemData 1
+  m_Script: {fileID: 11500000, guid: d6dd3843a64689345a4e4a2b87c28aac, type: 3}
+  m_Name: ArmorItemData2
   m_EditorClassIdentifier: 
+  ItemName: 
+  Image: {fileID: 21300000, guid: f59ab5aac1a092049a60bf9c96e6aaac, type: 3}
   MaxStack: 0
-  Weight: 12
+  Weight: 13
   IsStackable: 0
-  Image: {fileID: 21300000, guid: 248001cc8c4bbad4f95d4292ef2ebd55, type: 3}
-  _weaponPrefab: {fileID: 6832535174164334000, guid: e8d5a8a60ef05d344bfab92acd3efd7e, type: 3}
-  _weaponName: 
+  _armorPrefab: {fileID: 4302127680048002684, guid: b994565dd93d6dc47b7ff7f95c1965e0, type: 3}

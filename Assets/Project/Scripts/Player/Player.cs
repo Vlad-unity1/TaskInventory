@@ -1,10 +1,8 @@
-﻿using ArmorItem;
-using BookItem;
-using InventorySystem;
+﻿using InventorySystem;
+using ItemArmor;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using WeaponItem;
 
 namespace Model
 {
@@ -72,6 +70,7 @@ namespace Model
             if (EquippedArmor != null)
             {
                 Inventory.TryAddItem(EquippedArmor, 1);
+                EquippedArmor = null;
             }
 
             EquippedArmor = armor;
@@ -86,13 +85,13 @@ namespace Model
 
         public void ReadBook(Book book)
         {
-            if (ReadBookIDs.Contains(book.RandomID))
+            if (ReadBookIDs.Contains(book.Id))
             {
                 OnBookWasRead?.Invoke();
                 return;
             }
 
-            ReadBookIDs.Add(book.RandomID);
+            ReadBookIDs.Add(book.Id);
             Experience(book.EXP);
             OnBookRead?.Invoke();
         }

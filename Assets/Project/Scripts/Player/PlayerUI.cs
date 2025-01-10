@@ -9,7 +9,6 @@ namespace PlayerUIView
 {
     public class PlayerUI : MonoBehaviour
     {
-        [Header("UI Elements")]
         [SerializeField] private TextMeshProUGUI _expText;
         [SerializeField] private TextMeshProUGUI _infoBookText;
         [SerializeField] private Slider _healthSlider;

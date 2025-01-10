@@ -19,9 +19,9 @@ namespace Cell
 
         private void UpdateSlotUI()
         {
-            if (_slot.ItemData != null)
+            if (_slot.Item != null)
             {
-                _icon.sprite = _slot.ItemData.Image;
+                _icon.sprite = _slot.Item.Config.Image;
                 _countText.text = _slot.StackCount.ToString();
             }
             else

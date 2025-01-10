@@ -1,5 +1,7 @@
 using Buttons;
+using ItemsFactory;
 using Model;
+using PlayerDataScript;
 using PlayerUIView;
 using UnityEngine;
 using View;
@@ -14,6 +16,7 @@ namespace EntryPoinInProject
         [SerializeField] private InventoryButtons _inventoryButtons;
         [SerializeField] private PlayerData _playerData;
         [SerializeField] private PlayerUI _playerUI;
+        [SerializeField] private ItemFactory _itemFactory;
 
         private void Awake()
         {
@@ -21,7 +24,7 @@ namespace EntryPoinInProject
 
             _playerUI.Initialize(player, _playerView);
             _playerView.Initialize(player, _playerUI);
-            _inventoryView.Initialize(player.Inventory, player);
+            _inventoryView.Initialize(player.Inventory, player, _itemFactory);
             _inventoryButtons.Initialize(_inventoryView);
         }
     }

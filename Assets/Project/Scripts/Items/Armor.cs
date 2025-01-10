@@ -1,14 +1,20 @@
-﻿using ItemScriptable;
+using ArmorItem;
 using Model;
 using UnityEngine;
 
-namespace ArmorItem
+namespace ItemArmor
 {
-    [CreateAssetMenu(fileName = "ArmorItemData", menuName = "ScriptableObjects/ArmorItemData", order = 56)]
-    public class Armor : ItemData
+    public class Armor : Item
     {
-        [SerializeField] private GameObject _armorPrefab;
-        public GameObject ArmorPrefab => _armorPrefab;
+        public GameObject ArmorPrefab { get; private set; }
+
+        public Armor(string id, ItemConfig config) : base(id, config)
+        {
+            if (config is ArmorConfig armorConfig)
+            {
+                ArmorPrefab = armorConfig.ArmorPrefab;
+            }
+        }
 
         public override void UseItemEffect(Player player)
         {

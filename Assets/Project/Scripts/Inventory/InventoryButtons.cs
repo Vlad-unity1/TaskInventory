@@ -21,7 +21,7 @@ namespace Buttons
 
             AssignButtonListeners(_useButtons, slotIndex => _viewInventory.TryToUse(slotIndex));
             AssignButtonListeners(_removeButtons, slotIndex => _viewInventory.TryRemoveItem(slotIndex));
-            _addButton.onClick.AddListener(() => _viewInventory.TryAddItem());
+            _addButton.onClick.AddListener(() => _viewInventory.TryAddRandomItem());
             _openInventory.onClick.AddListener(ToggleInventory);
         }
 

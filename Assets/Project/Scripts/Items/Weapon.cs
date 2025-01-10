@@ -1,18 +1,21 @@
-﻿using ItemScriptable;
 using Model;
 using UnityEngine;
+using WeaponItem;
 
-namespace WeaponItem
+public class Weapon : Item
 {
-    [CreateAssetMenu(fileName = "WeaponItemData", menuName = "ScriptableObjects/WeaponItemData", order = 54)]
-    public class Weapon : ItemData
-    {
-        [SerializeField] private GameObject _weaponPrefab;
-        public GameObject WeaponPrefab => _weaponPrefab;
+    public GameObject WeaponPrefab { get; private set; }
 
-        public override void UseItemEffect(Player player)
+    public Weapon(string id, ItemConfig config) : base(id, config)
+    {
+        if (config is WeaponConfig weaponConfig)
         {
-            player.EquipWeapon(this);
+            WeaponPrefab = weaponConfig.WeaponPrefab;
         }
+    }
+
+    public override void UseItemEffect(Player player)
+    {
+        player.EquipWeapon(this);
     }
 }

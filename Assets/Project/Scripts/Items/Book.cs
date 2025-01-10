@@ -1,24 +1,24 @@
-using ItemScriptable;
+using BookItem;
 using Model;
-using System;
-using UnityEngine;
 
-namespace BookItem
+public class Book : Item
 {
-    [CreateAssetMenu(fileName = "BookItemData", menuName = "ScriptableObjects/BookItemData", order = 55)]
-    public class Book : ItemData
+    public int EXP { get; private set; }
+
+    public Book(string id, ItemConfig config) : base(id, config)
     {
-        [field: SerializeField] public int EXP { get; private set; }
-        public string RandomID { get; private set; } = string.Empty;
-
-        public override void UseItemEffect(Player player)
+        if (config is BookConfig bookConfig)
         {
-            player.ReadBook(this);
+            EXP = bookConfig.EXP;
         }
-
-        public void GenerateRandomID()
+        else
         {
-            RandomID = Guid.NewGuid().ToString();
+            EXP = 0;
         }
+    }
+
+    public override void UseItemEffect(Player player)
+    {
+        player.ReadBook(this);
     }
 }

@@ -1,17 +1,24 @@
-using ItemScriptable;
 using Model;
-using UnityEngine;
+using PotionItem;
 
-namespace PotionItem
+public class Potion : Item
 {
-    [CreateAssetMenu(fileName = "PotionItemData", menuName = "ScriptableObjects/PotionItemData", order = 53)]
-    public class Potion : ItemData
-    {
-        [field: SerializeField] public int HealthAmount { get; private set; }
+    public int HealthAmount { get; private set; }
 
-        public override void UseItemEffect(Player player)
+    public Potion(string id, ItemConfig config) : base(id, config)
+    {
+        if (config is PotionConfig potionConfig)
         {
-            player.Heal(HealthAmount);
+            HealthAmount = potionConfig.HealthAmount;
         }
+        else
+        {
+            HealthAmount = 0;  
+        }
+    }
+
+    public override void UseItemEffect(Player player)
+    {
+        player.Heal(HealthAmount);
     }
 }

@@ -6,7 +6,6 @@ namespace View
 {
     public class PlayerView : MonoBehaviour
     {
-        [Header("Equipment Slots")]
         [SerializeField] private Transform _weaponSlot;
         [SerializeField] private Transform _armorSlot;
 

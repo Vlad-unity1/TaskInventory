@@ -9,11 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2ef8ceaae4c0dfd4a903a3cf38eea5af, type: 3}
-  m_Name: ArmorBronze
+  m_Script: {fileID: 11500000, guid: a112d3d8742157f40bcbeb110902b904, type: 3}
+  m_Name: WeaponItemData
   m_EditorClassIdentifier: 
+  ItemName: 
+  Image: {fileID: 21300000, guid: 20bde681241052f45949cd4998d668b6, type: 3}
   MaxStack: 0
-  Weight: 15
+  Weight: 55
   IsStackable: 0
-  Image: {fileID: 21300000, guid: 56f594e5c3071484ba01d0b7e6a54856, type: 3}
-  _armorPrefab: {fileID: 4302127680048002684, guid: b994565dd93d6dc47b7ff7f95c1965e0, type: 3}
+  _weaponPrefab: {fileID: 2336501657799995263, guid: a672d4ce9d85ef7458d3b7f8d32ae8e3, type: 3}

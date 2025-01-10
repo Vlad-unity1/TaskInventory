@@ -9,12 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f3dbaa0fc467a2746b98f6c20ff86c95, type: 3}
+  m_Script: {fileID: 11500000, guid: c0bc0cf2efe866748a2d92c9c6814a97, type: 3}
   m_Name: BookItemData
   m_EditorClassIdentifier: 
-  MaxStack: 0
-  Weight: 12
-  IsStackable: 0
+  ItemName: Book
   Image: {fileID: 21300000, guid: 8ae285c8a5cd2c646973bcefb9378a16, type: 3}
-  Name: 
-  <EXP>k__BackingField: 20
+  MaxStack: 0
+  Weight: 25
+  IsStackable: 0
+  <EXP>k__BackingField: 25

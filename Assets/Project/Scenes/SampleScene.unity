@@ -934,6 +934,7 @@ GameObject:
   m_Component:
   - component: {fileID: 812498488}
   - component: {fileID: 812498487}
+  - component: {fileID: 812498489}
   m_Layer: 0
   m_Name: EntryPoint
   m_TagString: Untagged
@@ -958,6 +959,7 @@ MonoBehaviour:
   _inventoryButtons: {fileID: 1408905702}
   _playerData: {fileID: 11400000, guid: a37388510740ef54faff40eca4b13d7b, type: 2}
   _playerUI: {fileID: 2027485331}
+  _itemFactory: {fileID: 812498489}
 --- !u!4 &812498488
 Transform:
   m_ObjectHideFlags: 0
@@ -973,6 +975,25 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &812498489
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 812498486}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea737daa2ef7922499432e43f7d50ed4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _availableConfigs:
+  - {fileID: 11400000, guid: a8c6569605233b148955a253f57c5dec, type: 2}
+  - {fileID: 11400000, guid: f1ef18298517dea4da1a5f84062f63ce, type: 2}
+  - {fileID: 11400000, guid: 5e17f4ba60c3fc447ae6160049e3bb72, type: 2}
+  - {fileID: 11400000, guid: 88498c1dbb8ea6841aad7854cc1a068e, type: 2}
+  - {fileID: 11400000, guid: ec27c1913ae2a534ebdf5b66c8f10613, type: 2}
+  - {fileID: 11400000, guid: 19b36ac3b60b933419c55fa8c51c9fd6, type: 2}
 --- !u!1 &931898249
 GameObject:
   m_ObjectHideFlags: 0
@@ -1837,7 +1858,6 @@ GameObject:
   - component: {fileID: 1408905697}
   - component: {fileID: 1408905701}
   - component: {fileID: 1408905702}
-  - component: {fileID: 1408905703}
   m_Layer: 5
   m_Name: Canvas Inventory
   m_TagString: Untagged
@@ -1977,7 +1997,6 @@ MonoBehaviour:
   - {fileID: 2026316290700515756}
   - {fileID: 2026316290532674153}
   - {fileID: 2026316290321497762}
-  _itemData: {fileID: 1408905703}
 --- !u!114 &1408905702
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2013,27 +2032,6 @@ MonoBehaviour:
   - {fileID: 8295204863033090835}
   - {fileID: 8295204863916414936}
   _openInventory: {fileID: 705143969}
---- !u!114 &1408905703
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1408905696}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2b52b1428a03062458ee4d46dae3e85e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _itemData:
-  - {fileID: 11400000, guid: 088385f46683d184b8554d1dd8eb2d6a, type: 2}
-  - {fileID: 11400000, guid: 5e17f4ba60c3fc447ae6160049e3bb72, type: 2}
-  - {fileID: 11400000, guid: 5e17f4ba60c3fc447ae6160049e3bb72, type: 2}
-  - {fileID: 11400000, guid: 55d107ee42b54444b9d548af136a94d6, type: 2}
-  - {fileID: 11400000, guid: 15f62ad2198506d489f1b25f7a4f770e, type: 2}
-  - {fileID: 11400000, guid: 04e93d2403d3b7245960815dd4bcf164, type: 2}
-  - {fileID: 11400000, guid: 1351163b71c0bf04e9026155ae68822c, type: 2}
-  - {fileID: 11400000, guid: 54061eba0231254409c4aa74cdfd0b57, type: 2}
 --- !u!1 &1412296808
 GameObject:
   m_ObjectHideFlags: 0
